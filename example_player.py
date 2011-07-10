@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-#Autor: Takeoo111111
-#Last modified: Takeoo111111 09.Jul.2011
 
 import os
-import grooveshark
 import tempfile
 import subprocess
 import sys
+
+from gsapi import grooveshark
+
+
 # Handle Error Output
 def except_output_handler(except_type, except_value, traceback):
     if except_type == KeyboardInterrupt:
@@ -57,10 +58,10 @@ def menu():
 
 while run == True:
 	if menu() == "1":
-	
+
 		os.system('clear')
 		query = raw_input("Search for Song: ")
-	
+
 		print "Top 10 results:"
 		for i, song in enumerate(client.search(query)):
 			if i < 10:
@@ -69,10 +70,10 @@ while run == True:
 				break
 		print ""
 
-	else:	
+	else:
 		null = open('/dev/null', 'wb')
 		os.system('clear')
-		
+
 		for radio in radiodict.keys():
 			print radio
 		print ""
@@ -80,7 +81,7 @@ while run == True:
 		os.system('clear')
 		print "Press space to pause. Press Ctlr+C to switch to next Song. Double Ctlr+C to switch it off"
 		radio = client.radio(radiodict.get(radiochoose))
-		
+
 		for i in range(0, 1000):
 		    song = radio.song
 		    print '%i: %s - %s - %s' % (i + 1, song.name, song.artist.name, song.album.name)
@@ -100,4 +101,4 @@ while run == True:
 		            process.terminate()
 		    output.close()
 		null.close()
-	
+

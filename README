@@ -1,7 +1,28 @@
 ATTENTION:
-This module is only a proof of concept and not an offical part of Grooveshark. Use it at your own risk. I am not responsible for any violations against the Grooveshark Terms of Service (It is not 
-allowed to download music except for cache usage).
-Grooveshark Terms of Service: http://www.grooveshark.com/terms
+This module is only a proof of concept and not an offical part of Grooveshark.
+Use it at your own risk. We are not responsible for any violations against the
+Grooveshark Terms of Service (It is not allowed to download music except for
+cache usage). Grooveshark Terms of Service: http://www.grooveshark.com/terms
 
-The API which is used is from koehlma:
+The API wrapper which is used is property of koehlma:
 https://github.com/koehlma/pygrooveshark
+
+
+
+1. WHAT THIS IS/WILL BE
+-----------------------
+The objective is to create a ncurses gui to stream and listen to music from the
+GrooveShark Webservice, through their API.
+
+
+
+2. DEPENDENCIES (currently tested versions)
+-------------------------------------------
+> Python  (2.7)
+> MPlayer (1.0~rc4)
+
+
+
+3. TODO
+-------
+
