@@ -71,21 +71,21 @@ class Picture(object):
     '''
     Could be an album cover or a user picture.
     Do not use this class directly.
-        
+
     :param url: image url
     '''
     def __init__(self, url):
         self._url = url
         self._data = None
         self._type = self._url.split('.').pop()
-    
+
     @property
     def type(self):
         '''
         image type for example png or jpg
         '''
         return self._type
-    
+
     @property
     def data(self):
         '''
@@ -101,7 +101,7 @@ class Stream(object):
     '''
     Get song's raw data.
     Do not use this class directly.
-        
+
     :param ip: streaming server adress
     :param key: streaming key required to get the stream
     '''
@@ -112,14 +112,14 @@ class Stream(object):
                                   headers=HEADER_USER_AGENT)
         self._data = urllib2.urlopen(request)
         self._size = int(self.data.info().getheader('Content-Length'))
-       
+
     @property
     def data(self):
         '''
         A file-like object containing song's raw data.
         '''
         return self._data
-    
+
     @property
     def size(self):
         '''
@@ -131,7 +131,7 @@ class Album(object):
     '''
     Represents an album.
     Do not use this class directly.
-        
+
     :param id: internal album id
     :param name: name
     :param artist_id: artist's id to generate an :py:class:`Artist` object
@@ -152,21 +152,21 @@ class Album(object):
 
     def __str__(self):
         return '%s - %s' % (self.name, self.artist.name)
-    
+
     @property
     def id(self):
         '''
         internal album id
         '''
         return self._id
-    
+
     @property
     def name(self):
         '''
         album's name
         '''
         return self._name
-    
+
     @property
     def artist(self):
         '''
@@ -175,7 +175,7 @@ class Album(object):
         if not self._artist:
             self._artist = Artist(self._artist_id, self._artist_name, self._connection)
         return self._artist
-    
+
     @property
     def cover(self):
         '''
@@ -185,7 +185,7 @@ class Album(object):
             if not self._cover:
                 self._cover = Picture(self._cover_url)
             return self._cover
-    
+
     @property
     def songs(self):
         '''
@@ -201,7 +201,7 @@ class Artist(object):
     '''
     Represents an artist.
     Do not use this class directly.
-        
+
     :param id: internal artist id
     :param name: name
     :param connection: underlying :class:`Connection` object
@@ -212,7 +212,7 @@ class Artist(object):
         self._name = name
         self._similar = None
         self._songs = None
-        
+
     def __str__(self):
         return self.name
 
@@ -222,7 +222,7 @@ class Artist(object):
         internal artist id
         '''
         return self._id
-    
+
     @property
     def name(self):
         '''
@@ -240,7 +240,7 @@ class Artist(object):
                              self._connection.request('artistGetSimilarArtists', {'artistID' : self.id},
                                                       self._connection.header('artistGetSimilarArtists'))[1]['SimilarArtists']]
         return iter(self._similar)
-    
+
     @property
     def songs(self):
         '''
@@ -251,12 +251,12 @@ class Artist(object):
                            self._connection.request('artistGetSongs', {'artistID' : self.id, 'isVerified' : True, 'offset' : 0},
                                                     self._connection.header('artistGetSongs'))[1]['songs']]
         return iter(self._songs)
-             
+
 class Song(object):
     '''
     Represents a song.
     Do not use this class directly.
-        
+
     :param id: internal song id
     :param name: name
     :param artist_id: artist's id to generate an :py:class:`Artist` object
@@ -285,29 +285,29 @@ class Song(object):
         self._popularity = popularity
         self._artist = None
         self._album = None
-        
+
     def __str__(self):
         return '%s - %s - %s' % (self.name, self.artist.name, self.album.name)
-    
+
     @classmethod
     def from_response(cls, song, connection):
         return cls(song['SongID'], song['Name'], song['ArtistID'], song['ArtistName'], song['AlbumID'], song['AlbumName'],
                    song['CoverArtFilename'], song['TrackNum'], song['EstimateDuration'], song['Popularity'], connection)
-    
+
     @property
     def id(self):
         '''
         internal song id
         '''
         return self._id
-    
+
     @property
     def name(self):
         '''
         name
         '''
         return self._name
-    
+
     @property
     def artist(self):
         '''
@@ -316,7 +316,7 @@ class Song(object):
         if not self._artist:
             self._artist = Artist(self._artist_id, self._artist_name, self._connection)
         return self._artist
-    
+
     @property
     def album(self):
         '''
@@ -325,28 +325,28 @@ class Song(object):
         if not self._album:
             self._album = Album(self._album_id, self._album_name, self._artist_id, self._artist_name, self._cover_url, self._connection)
         return self._album
-    
+
     @property
     def track(self):
         '''
         track number
         '''
         return self._track
-    
+
     @property
     def duration(self):
         '''
         estimate song duration
         '''
         return self._duration
-    
+
     @property
     def popularity(self):
         '''
         populaity
         '''
         return self._popularity
-    
+
     @property
     def stream(self):
         '''
@@ -361,7 +361,7 @@ class User(object):
     '''
     Represents a user.
     Do not use this class directly.
-        
+
     :param id: internal user id
     :param username: username
     :param picture: picture as :class:`Picture` object
@@ -369,7 +369,7 @@ class User(object):
     :param sex: sex
     :param country: country
     :param connection: underlying :class:`Connection` object
-    :param complete: ``True`` if some user information is missing 
+    :param complete: ``True`` if some user information is missing
     '''
     def __init__(self, id, username, picture_url, city, sex, country, connection, complete=False):
         self._connection = connection
@@ -381,10 +381,10 @@ class User(object):
         self._country = country
         self._complete = complete
         self._picture = None
-    
+
     def __str__(self):
         return self.name
-    
+
     def _complete_information(self):
         '''
         Use getUserByID method to fetch user information if it is not complete
@@ -403,7 +403,7 @@ class User(object):
         internal user id
         '''
         return self._id
-    
+
     @property
     def name(self):
         '''
@@ -421,7 +421,7 @@ class User(object):
         if not self._picture and self._picture_url:
             self._picture = Picture(self._picture_url)
         return self._picture
-    
+
     @property
     def city(self):
         '''
@@ -430,7 +430,7 @@ class User(object):
         if self._complete:
             self._complete_information()
         return self._city
-    
+
     @property
     def country(self):
         '''
@@ -439,7 +439,7 @@ class User(object):
         if self._complete:
             self._complete_information()
         return self._country
-    
+
     @property
     def sex(self):
         '''
@@ -453,11 +453,11 @@ class Playlist(object):
     '''
     Represents a playlist.
     Do not use this class directly.
-        
+
     :param id: internal playlist id
-    :param name: name    
-    :param user_id: user's id who owns the playlist 
-    :param user_name: user's name who owns the playlist 
+    :param name: name
+    :param user_id: user's id who owns the playlist
+    :param user_name: user's name who owns the playlist
     :param variety: variety
     :param num_artists: number of artists
     :param num_songs: number of songs
@@ -480,7 +480,7 @@ class Playlist(object):
         self._score = score
         self._songs = None
         self._user = None
-    
+
     def __str__(self):
         return '%s - %s' % (self.name, self.user.name)
 
@@ -490,35 +490,35 @@ class Playlist(object):
         internal playlist id
         '''
         return self._id
-    
+
     @property
     def name(self):
         '''
         name
         '''
         return self._name
-    
+
     @property
     def variety(self):
         '''
         variety of songs
         '''
         return self._variety
-    
+
     @property
     def num_artists(self):
         '''
         number of artists
         '''
         return self._num_artists
-    
+
     @property
     def num_songs(self):
         '''
         number of songs
         '''
         return self._num_songs
-    
+
     @property
     def about(self):
         '''
@@ -532,7 +532,7 @@ class Playlist(object):
         playlist's rank
         '''
         return self._rank
-    
+
     @property
     def score(self):
         '''
@@ -548,7 +548,7 @@ class Playlist(object):
         if not self._user:
             self._user = User(self._user_id, self._user_name, None, None, None, None, self._connection, True)
         return self._user
-    
+
     @property
     def songs(self):
         '''
@@ -564,7 +564,7 @@ class Radio(object):
     '''
     Listen to songs by specifc genre.
     Do not use this class directly.
-    
+
     :param artists: list of artist ids
     :param radio: the genre (see :class:`Client`'s :meth:`radio` method)
     :param connection: the underlying :class:`Connection` object
@@ -575,7 +575,7 @@ class Radio(object):
         self._connection = connection
         self._recent_artists = []
         self._songs_already_seen = []
-    
+
     @property
     def song(self):
         '''
@@ -583,7 +583,7 @@ class Radio(object):
         '''
         song = self._connection.request('autoplayGetSong', {'weightModifierRange' : [-9,9],
                                                             'seedArtists' : dict([(artist, 'p') for artist in self._artists]),
-                                                            'tagID' : self._radio, 'recentArtists' : self._recent_artists, 
+                                                            'tagID' : self._radio, 'recentArtists' : self._recent_artists,
                                                             'songQueueID' : self._connection.queue_id, 'secondaryArtistWeightModifier' : 0.75,
                                                             'country' : self._connection.country, 'seedArtistWeightRange' : [110,130],
                                                             'songIDsAlreadySeen' : self._songs_already_seen, 'maxDuration' : 1500,
@@ -595,9 +595,9 @@ class Radio(object):
 class Connection(object):
     '''
     Lowlevel api communication.
-    
+
     :param session: stored session information as returned by :meth:`init_session` method.
-    :param token: stored token information as returned by :meth:`init_token` method.   
+    :param token: stored token information as returned by :meth:`init_token` method.
     :param queue_id: stored queue id as returned by :meth:`init_queue` method.
     '''
     def __init__(self, session=None, token=None, queue_id=None):
@@ -612,14 +612,14 @@ class Connection(object):
             self._token_time = token['time']
         if queue_id:
             self.queue_id = queue_id
-    
+
     def _random_hex(self):
         '''
         Returns a random hex string
         '''
         hex_set = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
         return ''.join([random.choice(hex_set) for i in range(6)])
-    
+
     def _request_token(self, method):
         '''
         Calculate request token.
@@ -629,7 +629,7 @@ class Connection(object):
             self.init_token()
         random_value = self._random_hex()
         return random_value + hashlib.sha1(method + ':' + self._token + ':quitStealinMahShit:' + random_value).hexdigest()
-    
+
     def _json_request_header(self):
         '''
         Return HTTP-headers for json-requests
@@ -637,8 +637,8 @@ class Connection(object):
         return {'Cookie' : 'PHPSESSID=' + self._session, 'Content-Type' : 'application/json',
                 'User-Agent' : 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.10) Gecko/2009042316 Firefox/3.0.10',
                 'Content-Type' : 'application/json',
-                'Referer' : REFERER}    
-    
+                'Referer' : REFERER}
+
     def _get_session(self):
         '''
         Request session id and country, calculate communication secret
@@ -649,7 +649,7 @@ class Connection(object):
             self._secret = hashlib.md5(self._session).hexdigest()
             config = json.loads(re.search(r'\<script type="text/javascript"\>window\.gsConfig = (\{.*\});\<\/script\>', response.read()).group(1))
             self.country = config['country']
-    
+
     def _get_token(self):
         '''
         Request communication token
@@ -662,34 +662,34 @@ class Connection(object):
                                     'privacy' : 0,
                                     'client' : 'htmlshark'})[1]
         self._token_time = time.time()
-        
+
     def _get_queue_id(self):
         '''
         Request queue id
         '''
-        self.queue_id = self.request('initiateQueue', None, self.header('initiateQueue', 'jsqueue'))[1] 
-       
+        self.queue_id = self.request('initiateQueue', None, self.header('initiateQueue', 'jsqueue'))[1]
+
     def init_session(self):
         '''
         Fetch Grooveshark's session id, country and calculate communication secret
         '''
         self._get_session()
         return {'id' : self._session, 'secret' : self._secret, 'country' : self.country, 'user' : self._user}
-    
+
     def init_token(self):
         '''
         Fetch Grooveshark's communication token requied for every request
         '''
         self._get_token()
         return {'token' : self._token, 'time' : self._token_time}
-    
+
     def init_queue(self):
         '''
         Fetch Grooveshark's queue id
         '''
         self._get_queue_id()
         return self.queue_id
-        
+
     def header(self, method, client = 'htmlshark'):
         '''
         Returns a header for Grooveshark's API json-requests
@@ -701,7 +701,7 @@ class Connection(object):
                 'session' : self._session,
                 'client' : client,
                 'Country' : self.country}
-    
+
     def request(self, method, parameters, header):
         '''
         Make a json-request to Grooveshark's API
@@ -717,13 +717,13 @@ class Connection(object):
 class Client(object):
     '''
     A client for Grooveshark's API which supports:
-        
+
     * radio (songs by genre)
     * search for songs, artists, albums, playlists and users
     * popular songs
-    
+
     :param session: stored session information as returned by :meth:`init_session` method.
-    :param token: stored token information as returned by :meth:`init_token` method.   
+    :param token: stored token information as returned by :meth:`init_token` method.
     :param queue_id: stored queue id as returned by :meth:`init_queue` method.
     '''
     def __init__(self, session=None, token=None, queue_id=None):
@@ -732,52 +732,52 @@ class Client(object):
     def init(self):
         '''
         Fetch Grooveshark's session, communication token and queue id.
-        
-        :rtype: tuple: (:meth:`init_session()`, :meth:`init_token()`, :meth:`init_queue()`)        
+
+        :rtype: tuple: (:meth:`init_session()`, :meth:`init_token()`, :meth:`init_queue()`)
         '''
         return (self._connection.init_session(), self._connection.init_token(), self._connection.init_queue())
-    
+
     def init_session(self):
         '''
         Fetch Grooveshark's session.
-        
+
         :rtype: dictionary: {'id' : session id, 'secret' : session secret, 'country' : session country, 'user' : user id}
-        
-        You can store the returned dictionary and use it again over the *session* argument of the :class:`Client` class. 
+
+        You can store the returned dictionary and use it again over the *session* argument of the :class:`Client` class.
         '''
         return self._connection.init_session()
-    
+
     def init_token(self):
         '''
         Fetch Grooveshark's communication token.
         Make sure to call :meth:`init_session()` first.
-        
+
         :rtype: dictionary: {'token' : communication token, 'time' : actual time}
-        
-        You can store the returned dictionary and use it again over the *token* argument of the :class:`Client` class. 
+
+        You can store the returned dictionary and use it again over the *token* argument of the :class:`Client` class.
         '''
         return self._connection.init_token()
-    
+
     def init_queue(self):
         '''
         Fetch Grooveshark's queue id.
         Make sure to call :meth:`init_token()` first.
-        
+
         :rtype: queue id
-        
-        You can store the returned queue id and use it again over the *queue_id* argument of the :class:`Client` class. 
+
+        You can store the returned queue id and use it again over the *queue_id* argument of the :class:`Client` class.
         '''
         return self._connection.init_queue()
-    
+
     def radio(self, radio):
         '''
         Get songs belong to a specific genre.
-        
+
         :param radio: genre to listen to
         :rtype: a :class:`Radio` object
-        
+
         Genres:
-        
+
         +-------------------------------------+---------------------------------+
         | Constant                            | Genre                           |
         +=====================================+=================================+
@@ -831,7 +831,7 @@ class Client(object):
         artists = self._connection.request('getArtistsForTagRadio', {'tagID' : radio},
                                            self._connection.header('getArtistsForTagRadio', 'jsqueue'))[1]
         return Radio(artists, radio, self._connection)
-    
+
     def _parse_album(self, album):
         '''
         Parse search json-data and create an :class:`Album` object.
@@ -841,7 +841,7 @@ class Client(object):
         else:
             cover_url = None
         return Album(album['AlbumID'], album['Name'], album['ArtistID'], album['ArtistName'], cover_url, self._connection)
-    
+
     def _parse_playlist(self, playlist):
         '''
         Parse search json-data and create a list of :class:`Playlist` objects.
@@ -849,7 +849,7 @@ class Client(object):
         return Playlist(playlist['PlaylistID'], playlist['Name'], playlist['UserID'],  playlist['Username'],
                         playlist['Variety'], playlist['NumArtists'], playlist['NumSongs'],
                         playlist['About'], playlist['Rank'], playlist['Score'], self._connection)
-            
+
     def _parse_user(self, user):
         '''
         Parse search json-data and create a :class:`User` object.
@@ -859,17 +859,17 @@ class Client(object):
         else:
             picture = None
         return User(user['UserID'], user['Username'], picture, user['City'], user['Sex'], user['Country'], self._connection)
-    
+
     def search(self, query, type=SEARCH_TYPE_SONGS):
         '''
         Search for songs, artists, albums, playlists, users and events.
-        
+
         :param query: search string
         :param radio: type to search for
         :rtype: a generator generates :class:`Song`, :class:`Artist`, :class:`Album`, :class:`Playlist` or :class:`User` objects
-        
+
         Search Types:
-               
+
         +---------------------------------+---------------------------------+
         | Constant                        | Meaning                         |
         +=================================+=================================+
@@ -900,12 +900,12 @@ class Client(object):
     def popular(self, period=POPULAR_TYPE_DAILY):
         '''
         Get popular songs.
-        
-        :param period: time period 
+
+        :param period: time period
         :rtype: a generator generates :class:`Song` objects
-        
+
         Time periods:
-        
+
         +---------------------------------+-------------------------------------+
         | Constant                        | Meaning                             |
         +=================================+=====================================+
