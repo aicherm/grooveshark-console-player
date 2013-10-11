@@ -1,4 +1,7 @@
 ATTENTION:
+Since Grooveshark is no longer accessible from germany (due to licence problems)
+it wasn't possible to finish this project. So, feel free to get inspired or use it
+for everything you want.
 This module is only a proof of concept and not an offical part of Grooveshark.
 Use it at your own risk. We are not responsible for any violations against the
 Grooveshark Terms of Service (It is not allowed to download music except for
@@ -21,8 +24,4 @@ GrooveShark Webservice, through their API.
 > Python  (2.7)
 > MPlayer (1.0~rc4)
 
-
-
-3. TODO
--------
 
